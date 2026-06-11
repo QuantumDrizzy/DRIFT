@@ -13,13 +13,13 @@ proving anything — each one makes a piece of the process *observable*.
 - **Understand:** the shape of the whole thing before any code.
 - **Deliverable:** README, ADR-0001, this roadmap, CONCEPTS glossary.
 
-### Phase 1 — The engine + observability ⬜  *(start here)*
-- **Understand:** *matter computes.* Watch a spin system relax down an energy landscape to
-  its ground state.
-- **Build:** `IsingModel(J, h)`; solvers = **simulated annealing** + **exact** (brute force
-  / Lanczos for small `n`); metrics = energy-vs-step, ground state, magnetization.
-- **Validate on:** 1D/2D ferromagnetic Ising (known answer).
-- **Figure:** the relaxation trajectory (energy descending) + the final ground state.
+### Phase 1 — The engine + observability ✅  *(see [results](results/PHASE1-results.md))*
+- **Understood:** *matter computes.* The relaxation figure shows a spin system exploring
+  hot, then freezing into its exact ground state as it cools.
+- **Built:** `IsingModel(J, h)`; solvers = **simulated annealing** + **exact** brute force;
+  metrics (energy, magnetization, Landauer floor); dark-palette viz.
+- **Validated:** 2D ferromagnet `L=4` → exact = annealing = `-32` (`= -2nJ`), SA reaches it.
+- **Figures:** `figures/phase1_{relaxation,groundstate,landscape}.png`.
 
 ### Phase 2 — Face ①: Optimization (QUBO) ⬜
 - **Understand:** *optimization = ground state.* A combinatorial problem solved by physics.
