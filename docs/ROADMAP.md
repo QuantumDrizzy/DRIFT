@@ -58,11 +58,15 @@ proving anything — each one makes a piece of the process *observable*.
   stated honestly).
 - **Figure:** `figures/phase5_assembly.png` — hot disorder → assembled plus.
 
-### Phase 6 — Face ③: Self-replication ⬜
-- **Understand:** *grey goo, contained.* Replication as crystallization / periodic ground
-  state.
-- **Build:** `crystal` builder (periodicity-favoring couplings).
-- **Figure:** a pattern replicating across the lattice as it relaxes.
+### Phase 6 — Face ③: Self-replication ✅  *(see [results](results/PHASE6-results.md))*
+- **Understood:** *grey goo, contained.* Replication as crystallization — a periodic ground
+  state from translation-invariant frustrated couplings (`h = 0`; the motif emerges, it is
+  not painted in).
+- **Built:** `crystal` builder (`crystal_2d` J1/J2/Jy, `column_period`, `is_striped`) +
+  `plot_crystal`.
+- **Validated:** 4×4 exact = period-4 stripe crystal (E = -2n); 12×12 anneals from a hot
+  melt to the same crystal (E = -288 = -2n, period 4). Degeneracy → domains, stated honestly.
+- **Figure:** `figures/phase6_crystal.png` — disordered melt → striped crystal, unit cell marked.
 
 ### Phase 7 — The microscope (synthesis) ⬜
 - **Understand:** the payoff — compare all four faces under the *same* probes. Does a memory

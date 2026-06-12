@@ -174,6 +174,30 @@ def plot_assembly(disordered, assembled, L, *, bonds=None, max_bonds=None,
     return _save(fig, out)
 
 
+def plot_crystal(disordered, crystal, rows, cols, *, period=None,
+                 title="Self-replication", out="figures/crystal.png"):
+    """Two lattices: a hot disordered melt and the crystallized periodic ground state.
+    A box marks the replicated unit cell — the motif that copies itself across the lattice."""
+    _style()
+    cmap = plt.matplotlib.colors.ListedColormap([MAGENTA, CYAN])
+    fig, axes = plt.subplots(1, 2, figsize=(8.4, 4.3))
+    for ax, g, lab in zip(axes, (disordered, crystal),
+                          ("disordered melt (hot)", "crystal (periodic ground state)")):
+        ax.imshow(np.asarray(g).reshape(rows, cols), cmap=cmap, vmin=-1, vmax=1,
+                  interpolation="nearest")
+        ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+        ax.set_title(lab, color=TEXT, fontsize=10)
+    if period is not None:
+        rect = plt.Rectangle((-0.5, -0.5), period, min(rows, 2), fill=False,
+                             edgecolor=AMBER, lw=2.2)
+        axes[1].add_patch(rect)
+        axes[1].text(period / 2 - 0.5, min(rows, 2) - 0.4, "unit cell", color=AMBER,
+                     fontsize=8.5, ha="center", va="top")
+    fig.suptitle(title, color=CYAN, fontweight="bold", fontsize=13)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.94))
+    return _save(fig, out)
+
+
 def plot_chi_sweep(gammas, entropies, chis, *, gamma_c=None,
                    title="χ — how much the state computes", out="figures/chi.png"):
     """Entanglement entropy (cyan) and effective bond dimension χ (magenta) vs. the
