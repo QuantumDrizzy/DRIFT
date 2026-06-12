@@ -68,12 +68,17 @@ proving anything — each one makes a piece of the process *observable*.
   melt to the same crystal (E = -288 = -2n, period 4). Degeneracy → domains, stated honestly.
 - **Figure:** `figures/phase6_crystal.png` — disordered melt → striped crystal, unit cell marked.
 
-### Phase 7 — The microscope (synthesis) ⬜
-- **Understand:** the payoff — compare all four faces under the *same* probes. Does a memory
-  compute more than an assembly? Where does each sit against the Landauer / Lloyd limits?
-- **Build:** a unified comparison harness + the "cosmic roofline" (real hardware vs. ultimate
-  physical limits).
-- **Figure:** the four faces on one axis of compute-density (χ) and physical cost.
+### Phase 7 — The microscope (synthesis) ✅  *(see [results](results/PHASE7-results.md))*
+- **Understood:** one Ising engine + pluggable builders = four faces of "matter computes",
+  and real hardware sits 6+ orders of magnitude above the Landauer floor — the headroom
+  toward computronium.
+- **Built:** `experiments/phase7_microscope.py` (runs all four faces back-to-back from the
+  same engine), `plot_four_faces` (2×2 ground-state panel), `plot_cosmic_roofline` (log
+  J/op axis with the Landauer wall and Margolus–Levitin floors).
+- **Figures:** `figures/phase7_four_faces.png` (optimization, assembly, replication, memory
+  side by side); `figures/phase7_roofline.png` (real systems vs. physical limits).
+- **Honest scope:** the roofline uses textbook order-of-magnitude landmarks (Landauer and
+  Margolus–Levitin are first-principles; the rest are device estimates).
 
 ---
 

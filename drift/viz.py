@@ -198,6 +198,97 @@ def plot_crystal(disordered, crystal, rows, cols, *, period=None,
     return _save(fig, out)
 
 
+def plot_four_faces(panels, *, title="Four faces, one engine",
+                    out="figures/four_faces.png"):
+    """One image with the four faces in a 2x2 grid. Each panel: a small lattice or graph
+    showing the ground state of that face. Each is just an (J, h) into the same Ising
+    engine; only the shape of the coupling matrix changes from face to face.
+
+    `panels` is a list of 4 dicts, each:
+        {"name": str, "metric": str, "kind": "grid"|"graph",
+         "data": np.ndarray  (grid: 2-D) or  (graph: (W, s)),
+         "vrange": (lo, hi)   for grid only (defaults to data range)}
+    """
+    _style()
+    cmap = plt.matplotlib.colors.ListedColormap([MAGENTA, CYAN])
+    fig, axes = plt.subplots(2, 2, figsize=(8.8, 8.4))
+    axes = axes.ravel()
+    for ax, p in zip(axes, panels):
+        if p["kind"] == "grid":
+            g = np.asarray(p["data"])
+            lo, hi = p.get("vrange", (g.min(), g.max()))
+            cm = cmap if (lo == -1 and hi == 1) else "viridis"
+            ax.imshow(g, cmap=cm, vmin=lo, vmax=hi, interpolation="nearest")
+        else:  # graph
+            W, s = p["data"]
+            n = len(s)
+            try:
+                import networkx as nx
+                G = nx.Graph()
+                G.add_nodes_from(range(n))
+                G.add_edges_from([(i, j) for i in range(n) for j in range(i + 1, n) if W[i, j] != 0])
+                pos = {k: np.asarray(v) for k, v in nx.spring_layout(G, seed=7).items()}
+            except Exception:
+                ang = 2 * np.pi * np.arange(n) / max(n, 1)
+                pos = {i: np.array([np.cos(a), np.sin(a)]) for i, a in enumerate(ang)}
+            for i in range(n):
+                for j in range(i + 1, n):
+                    if W[i, j] == 0:
+                        continue
+                    cut = s[i] != s[j]
+                    ax.plot([pos[i][0], pos[j][0]], [pos[i][1], pos[j][1]],
+                            color=(LIME if cut else MUTED), lw=(1.8 if cut else 0.5),
+                            alpha=(0.85 if cut else 0.3), zorder=1)
+            for i in range(n):
+                ax.scatter(*pos[i], s=120, color=(CYAN if s[i] > 0 else MAGENTA),
+                           edgecolor="white", linewidth=0.6, zorder=2)
+            ax.set_aspect("equal")
+        ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+        ax.set_title(p["name"], color=CYAN, fontsize=11, fontweight="bold", loc="left")
+        ax.text(0.02, -0.05, p["metric"], color=AMBER, fontsize=9,
+                transform=ax.transAxes, va="top")
+    fig.suptitle(title, color=CYAN, fontweight="bold", fontsize=14)
+    fig.tight_layout(rect=(0, 0.02, 1, 0.95))
+    return _save(fig, out)
+
+
+def plot_cosmic_roofline(systems, *, landauer_300k=2.87e-21, landauer_4k=3.83e-23,
+                         title="Cosmic roofline - energy per operation",
+                         out="figures/cosmic_roofline.png"):
+    """Real and idealized systems on a log J/op axis, with the Landauer floor drawn as a
+    physical wall. `systems` is a list of (label, joules_per_op, color) tuples, sorted by
+    cost. The headroom between a system and the Landauer line is the gap toward
+    computronium."""
+    _style()
+    fig, ax = plt.subplots(figsize=(9.2, 5.4))
+    labels = [s[0] for s in systems]
+    vals = np.array([s[1] for s in systems], dtype=float)
+    colors = [s[2] for s in systems]
+
+    y = np.arange(len(systems))
+    ax.barh(y, vals, color=colors, edgecolor="white", linewidth=0.6, height=0.6, log=True)
+    ax.set_yticks(y); ax.set_yticklabels(labels, color=TEXT, fontsize=10)
+    ax.set_xscale("log")
+    ax.set_xlabel("energy per operation  (J/op)")
+    ax.set_title(title)
+
+    ax.axvline(landauer_300k, color=LIME, lw=1.8, ls="--", alpha=0.9)
+    ax.axvline(landauer_4k, color=AMBER, lw=1.4, ls=":", alpha=0.9)
+    ax.text(landauer_300k, -0.85, "Landauer\n300 K", color=LIME,
+            fontsize=8.5, ha="center", va="top")
+    ax.text(landauer_4k, -0.85, "Landauer\n4 K", color=AMBER,
+            fontsize=8.5, ha="center", va="top")
+
+    xmax = max(vals) * 50
+    for yi, v in zip(y, vals):
+        ax.text(v * 1.6, yi, f"{v:.1e} J/op", color=MUTED, fontsize=8.5, va="center")
+
+    ax.set_xlim(min(vals) * 0.05, xmax)
+    ax.set_ylim(-1.7, len(systems) - 0.3)
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    return _save(fig, out)
+
+
 def plot_chi_sweep(gammas, entropies, chis, *, gamma_c=None,
                    title="χ — how much the state computes", out="figures/chi.png"):
     """Entanglement entropy (cyan) and effective bond dimension χ (magenta) vs. the

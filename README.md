@@ -69,8 +69,15 @@ DRIFT/
 
 ## Status
 
-**Phase 0 — scaffolding.** Objective, roadmap, architecture, and glossary written. No
-engine yet. See [`docs/ROADMAP.md`](docs/ROADMAP.md) for what comes next.
+**All 8 phases landed (P0–P7).** The engine, the four faces, and the synthesis are done:
+
+- P0 — scaffolding · P1 — engine + observability · P2 — optimization (MaxCut) ·
+  P3 — quantum ground state + χ thermometer · P4 — Hopfield memory · P5 — Wang-tile
+  self-assembly · P6 — crystallization (self-replication) · P7 — the microscope.
+
+The two synthesis figures sit in `figures/phase7_four_faces.png` (one engine, four faces)
+and `figures/phase7_roofline.png` (real systems vs. the Landauer floor). See
+[`docs/ROADMAP.md`](docs/ROADMAP.md) and `docs/results/PHASE{1..7}-results.md`.
 
 ## Stack
 
