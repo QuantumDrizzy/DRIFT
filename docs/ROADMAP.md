@@ -29,13 +29,15 @@ proving anything — each one makes a piece of the process *observable*.
 - **Validated:** `G(n=14, p=0.5)`, 43 edges → exact = annealing = **31-edge cut** (E = -19).
 - **Figures:** `figures/phase2_{relaxation,maxcut}.png`.
 
-### Phase 3 — Tensor-network solver + χ (the thermometer) ⬜
-- **Understand:** *how much* a problem computes. Add a tensor-network ground-state solver
-  and read the **bond dimension χ** it needs — easy problems stay low-χ, hard ones explode.
-- **Build:** MPS/DMRG (or exact contraction) ground state + χ measurement + entanglement
-  entropy.
-- **Measure:** χ across easy vs. hard instances → χ as compute-density.
-- **Figure:** χ (and entropy) vs. problem difficulty. *This is the Blaze lesson, applied.*
+### Phase 3 — Quantum ground state + χ (the thermometer) ✅  *(see [results](results/PHASE3-results.md))*
+- **Understood:** *how much* a state computes. The transverse-field Ising chain's ground
+  state, with χ = the bond dimension a tensor network needs. χ stays small in the ordered
+  (cat) and disordered (polarized) phases and **peaks at the quantum phase transition**.
+- **Built:** `drift/quantum.py` — sparse TFIM, Lanczos ground state, entanglement entropy
+  (SVD), Blaze-style `effective_chi`; `plot_chi_sweep`.
+- **Validated:** `n=14` chain; χ: 4 (cat) → 6 (critical) → 3 (polarized); peak at Γ≈0.77
+  (Γ_c = 1, finite-size shift, stated honestly).
+- **Figure:** `figures/phase3_chi.png`.  *The Blaze lesson, applied as a probe.*
 
 ### Phase 4 — Face ④: Neural memory (Hopfield) ⬜
 - **Understand:** *memory = the self-assembly of an attractor.* The neuroscience face.

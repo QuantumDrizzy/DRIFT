@@ -133,3 +133,37 @@ def plot_graph_cut(W, s, *, title="MaxCut partition", out="figures/cut.png"):
     ax.set_title(title)
     fig.tight_layout(rect=(0, 0.04, 1, 1))
     return _save(fig, out)
+
+
+def plot_chi_sweep(gammas, entropies, chis, *, gamma_c=None,
+                   title="χ — how much the state computes", out="figures/chi.png"):
+    """Entanglement entropy (cyan) and effective bond dimension χ (magenta) vs. the
+    transverse field Γ. Both peak at the quantum phase transition — the state is most
+    entangled, and hardest to compress, exactly there."""
+    _style()
+    fig, ax = plt.subplots(figsize=(8.2, 4.8))
+    gammas = np.asarray(gammas)
+    ax.plot(gammas, entropies, color=CYAN, lw=2.0, marker="o", ms=3.5,
+            label="entanglement entropy S (bits)")
+    ax.set_xlabel("transverse field  Γ  (Γ/J)")
+    ax.set_ylabel("entropy S (bits)", color=CYAN)
+    ax.tick_params(axis="y", colors=CYAN)
+    ax.set_title(title)
+
+    axC = ax.twinx()
+    axC.plot(gammas, chis, color=MAGENTA, lw=2.0, marker="s", ms=3.5, label="effective χ")
+    axC.set_ylabel("effective bond dimension  χ", color=MAGENTA)
+    axC.tick_params(axis="y", colors=MAGENTA)
+    axC.grid(False)
+
+    if gamma_c is not None:
+        ax.axvline(gamma_c, color=AMBER, lw=1.6, ls="--", alpha=0.8)
+        ax.text(gamma_c, ax.get_ylim()[1] * 0.96, "  quantum phase transition",
+                color=AMBER, fontsize=8.5, va="top")
+
+    # only the data series, not the helper axvline (whose auto-label is "_child…")
+    lines = [ln for ln in (ax.get_lines() + axC.get_lines()) if not ln.get_label().startswith("_")]
+    ax.legend(lines, [ln.get_label() for ln in lines],
+              facecolor=PANEL, edgecolor=GRID, labelcolor=TEXT, fontsize=8.5, loc="upper right")
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    return _save(fig, out)
