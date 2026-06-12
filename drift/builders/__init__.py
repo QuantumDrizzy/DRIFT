@@ -6,5 +6,9 @@ follow in later phases.
 """
 
 from .qubo import qubo_to_ising, maxcut_ising, cut_value, random_graph
+from .hopfield import hopfield_model, recall, add_noise, overlap
 
-__all__ = ["qubo_to_ising", "maxcut_ising", "cut_value", "random_graph"]
+__all__ = [
+    "qubo_to_ising", "maxcut_ising", "cut_value", "random_graph",
+    "hopfield_model", "recall", "add_noise", "overlap",
+]

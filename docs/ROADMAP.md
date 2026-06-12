@@ -39,11 +39,14 @@ proving anything — each one makes a piece of the process *observable*.
   (Γ_c = 1, finite-size shift, stated honestly).
 - **Figure:** `figures/phase3_chi.png`.  *The Blaze lesson, applied as a probe.*
 
-### Phase 4 — Face ④: Neural memory (Hopfield) ⬜
-- **Understand:** *memory = the self-assembly of an attractor.* The neuroscience face.
-- **Build:** `hopfield` builder (patterns → Hebbian `J`); store patterns, recall from noise.
-- **Measure:** capacity (~0.138 N), basins of attraction, χ of a stored memory.
-- **Figure:** a noisy image relaxing back to a clean stored memory, frame by frame.
+### Phase 4 — Face ④: Neural memory (Hopfield) ✅  *(see [results](results/PHASE4-results.md))*
+- **Understood:** *memory = the self-assembly of an attractor.* The neuroscience face — the
+  same engine with Hebbian couplings; recall is relaxing to the nearest energy minimum.
+- **Built:** `hopfield` builder (`hopfield_model`, `recall`, `add_noise`, `overlap`) +
+  `plot_recall`.
+- **Validated:** `n=100`, 3 memories (within capacity ≈14); a 25%-corrupted cue (overlap
+  0.5) recovers to overlap **1.0** — perfect recall. (Hopfield, Nobel Physics 2024.)
+- **Figure:** `figures/phase4_recall.png` — noisy X relaxing back to the clean stored X.
 
 ### Phase 5 — Face ②: Self-assembly (aTAM / tiles) ⬜
 - **Understand:** *constructive nanotech.* A structure assembling itself by minimizing

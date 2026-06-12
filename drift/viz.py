@@ -135,6 +135,26 @@ def plot_graph_cut(W, s, *, title="MaxCut partition", out="figures/cut.png"):
     return _save(fig, out)
 
 
+def plot_recall(stored, noisy, recovered, L, *, overlaps=None,
+                title="Associative recall", out="figures/recall.png"):
+    """Three grids side by side: the stored memory, a noisy cue, and what the Hopfield
+    dynamics recovered. Memory recall = relaxing to the nearest attractor."""
+    _style()
+    cmap = plt.matplotlib.colors.ListedColormap([MAGENTA, CYAN])
+    labels = ["stored memory", "noisy cue", "recovered"]
+    if overlaps is not None:
+        labels = ["stored memory", f"noisy cue  (m={overlaps[0]:+.2f})",
+                  f"recovered  (m={overlaps[1]:+.2f})"]
+    fig, axes = plt.subplots(1, 3, figsize=(9.6, 3.7))
+    for ax, g, lab in zip(axes, (stored, noisy, recovered), labels):
+        ax.imshow(np.asarray(g).reshape(L, L), cmap=cmap, vmin=-1, vmax=1, interpolation="nearest")
+        ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+        ax.set_title(lab, color=TEXT, fontsize=10)
+    fig.suptitle(title, color=CYAN, fontweight="bold", fontsize=13)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.94))
+    return _save(fig, out)
+
+
 def plot_chi_sweep(gammas, entropies, chis, *, gamma_c=None,
                    title="χ — how much the state computes", out="figures/chi.png"):
     """Entanglement entropy (cyan) and effective bond dimension χ (magenta) vs. the
