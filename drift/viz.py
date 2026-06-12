@@ -155,6 +155,25 @@ def plot_recall(stored, noisy, recovered, L, *, overlaps=None,
     return _save(fig, out)
 
 
+def plot_assembly(disordered, assembled, L, *, bonds=None, max_bonds=None,
+                  title="Self-assembly", out="figures/assembly.png"):
+    """Two grids: a hot, disordered placement and the assembled ground state. The tiles
+    bind by glue affinity; the target structure is the arrangement with the most bonds."""
+    _style()
+    cmap = plt.matplotlib.colors.ListedColormap([MAGENTA, CYAN])
+    right = "assembled"
+    if bonds is not None and max_bonds is not None:
+        right = f"assembled  ({bonds}/{max_bonds} bonds)"
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.9))
+    for ax, g, lab in zip(axes, (disordered, assembled), ("disordered (hot)", right)):
+        ax.imshow(np.asarray(g).reshape(L, L), cmap=cmap, vmin=0, vmax=1, interpolation="nearest")
+        ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+        ax.set_title(lab, color=TEXT, fontsize=10)
+    fig.suptitle(title, color=CYAN, fontweight="bold", fontsize=13)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.94))
+    return _save(fig, out)
+
+
 def plot_chi_sweep(gammas, entropies, chis, *, gamma_c=None,
                    title="χ — how much the state computes", out="figures/chi.png"):
     """Entanglement entropy (cyan) and effective bond dimension χ (magenta) vs. the

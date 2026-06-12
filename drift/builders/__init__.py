@@ -7,8 +7,12 @@ follow in later phases.
 
 from .qubo import qubo_to_ising, maxcut_ising, cut_value, random_graph
 from .hopfield import hopfield_model, recall, add_noise, overlap
+from .tiles import (
+    Tile, jigsaw, tiles_qubo, decode_tiling, count_bonds, render,
+)
 
 __all__ = [
     "qubo_to_ising", "maxcut_ising", "cut_value", "random_graph",
     "hopfield_model", "recall", "add_noise", "overlap",
+    "Tile", "jigsaw", "tiles_qubo", "decode_tiling", "count_bonds", "render",
 ]

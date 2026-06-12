@@ -48,11 +48,15 @@ proving anything — each one makes a piece of the process *observable*.
   0.5) recovers to overlap **1.0** — perfect recall. (Hopfield, Nobel Physics 2024.)
 - **Figure:** `figures/phase4_recall.png` — noisy X relaxing back to the clean stored X.
 
-### Phase 5 — Face ②: Self-assembly (aTAM / tiles) ⬜
-- **Understand:** *constructive nanotech.* A structure assembling itself by minimizing
-  affinity energy.
-- **Build:** `tiles` builder (tile glues → `J, h`); the abstract Tile Assembly Model.
-- **Figure:** a target shape assembling as the system settles.
+### Phase 5 — Face ②: Self-assembly (aTAM / tiles) ✅  *(see [results](results/PHASE5-results.md))*
+- **Understood:** *constructive nanotech.* Wang tiles binding by glue affinity; the target
+  structure is the arrangement with the most bonds = the ground state.
+- **Built:** `tiles` builder (`jigsaw`, `tiles_qubo` one-hot + bond reward, `decode_tiling`,
+  `count_bonds`, `render`) + `plot_assembly`.
+- **Validated:** 2×2 jigsaw exact (4/4 bonds = target); 3×3 'plus' (81 spins) anneals to
+  **12/12 bonds = exact target** (8 restarts — the rigid puzzle sits in a narrow basin,
+  stated honestly).
+- **Figure:** `figures/phase5_assembly.png` — hot disorder → assembled plus.
 
 ### Phase 6 — Face ③: Self-replication ⬜
 - **Understand:** *grey goo, contained.* Replication as crystallization / periodic ground
