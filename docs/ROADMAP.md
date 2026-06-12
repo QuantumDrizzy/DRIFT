@@ -21,12 +21,13 @@ proving anything — each one makes a piece of the process *observable*.
 - **Validated:** 2D ferromagnet `L=4` → exact = annealing = `-32` (`= -2nJ`), SA reaches it.
 - **Figures:** `figures/phase1_{relaxation,groundstate,landscape}.png`.
 
-### Phase 2 — Face ①: Optimization (QUBO) ⬜
-- **Understand:** *optimization = ground state.* A combinatorial problem solved by physics.
-- **Build:** `qubo` builder (`Q → J, h`); canonical example **MaxCut** (or number
-  partitioning).
-- **Measure:** does annealing reach the exact optimum? how far, how often?
-- **Figure:** the graph + the partition emerging as the system cools.
+### Phase 2 — Face ①: Optimization (QUBO) ✅  *(see [results](results/PHASE2-results.md))*
+- **Understood:** *optimization = ground state.* MaxCut as a purely antiferromagnetic
+  Ising; the maximum cut is the lowest-energy spin configuration.
+- **Built:** `qubo` builder (`qubo_to_ising`, `maxcut_ising`, `cut_value`, `random_graph`)
+  + `plot_graph_cut`.
+- **Validated:** `G(n=14, p=0.5)`, 43 edges → exact = annealing = **31-edge cut** (E = -19).
+- **Figures:** `figures/phase2_{relaxation,maxcut}.png`.
 
 ### Phase 3 — Tensor-network solver + χ (the thermometer) ⬜
 - **Understand:** *how much* a problem computes. Add a tensor-network ground-state solver

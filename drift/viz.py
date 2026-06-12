@@ -99,3 +99,37 @@ def plot_landscape(all_energies, *, e_ground=None, title="Energy landscape", out
     ax.set_title(title)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     return _save(fig, out)
+
+
+def plot_graph_cut(W, s, *, title="MaxCut partition", out="figures/cut.png"):
+    """A weighted graph with its partition: nodes colored by side (±1), cut edges
+    highlighted, uncut edges faded. Uses a spring layout if networkx is available."""
+    _style()
+    W = np.asarray(W)
+    s = np.asarray(s)
+    n = len(s)
+
+    edges = [(i, j) for i in range(n) for j in range(i + 1, n) if W[i, j] != 0]
+    try:
+        import networkx as nx
+        G = nx.Graph()
+        G.add_nodes_from(range(n))
+        G.add_edges_from(edges)
+        pos = {k: np.asarray(v) for k, v in nx.spring_layout(G, seed=7).items()}
+    except Exception:
+        ang = 2 * np.pi * np.arange(n) / max(n, 1)
+        pos = {i: np.array([np.cos(a), np.sin(a)]) for i, a in enumerate(ang)}
+
+    fig, ax = plt.subplots(figsize=(6.0, 6.0))
+    for i, j in edges:
+        cut = s[i] != s[j]
+        ax.plot([pos[i][0], pos[j][0]], [pos[i][1], pos[j][1]],
+                color=(LIME if cut else MUTED), lw=(1.9 if cut else 0.6),
+                alpha=(0.9 if cut else 0.3), zorder=1)
+    for i in range(n):
+        ax.scatter(*pos[i], s=200, color=(CYAN if s[i] > 0 else MAGENTA),
+                   edgecolor="white", linewidth=0.7, zorder=2)
+    ax.set_xticks([]); ax.set_yticks([]); ax.grid(False); ax.set_aspect("equal")
+    ax.set_title(title)
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    return _save(fig, out)
