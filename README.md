@@ -69,11 +69,18 @@ DRIFT/
 
 ## Status
 
-**All 8 phases landed (P0–P7).** The engine, the four faces, and the synthesis are done:
+**Phases P0–P8 landed.** The engine, the four ground-state faces, the synthesis,
+and now the *dynamical* face:
 
 - P0 — scaffolding · P1 — engine + observability · P2 — optimization (MaxCut) ·
   P3 — quantum ground state + χ thermometer · P4 — Hopfield memory · P5 — Wang-tile
   self-assembly · P6 — crystallization (self-replication) · P7 — the microscope.
+- **P8 — the dynamical (reservoir) face** (`drift/reservoir.py`): the Ising
+  substrate driven in time as a physical reservoir, with *measurable* compute
+  capacity — Jaeger **memory capacity** and a **separation** metric (MC ≈ 33 / N=150,
+  peaking near spectral radius 0.95, the edge of chaos). Its spectral radius is set
+  via the **Spectra** spine, so DRIFT is a Spectra consumer. Ships with DRIFT's first
+  automated test suite (`tests/test_reservoir.py`, 4/4).
 
 The two synthesis figures sit in `figures/phase7_four_faces.png` (one engine, four faces)
 and `figures/phase7_roofline.png` (real systems vs. the Landauer floor). See
