@@ -49,12 +49,26 @@ def test_separation_zero_for_identical_positive_for_distinct():
     assert separation(res, eps=1e-2) > 1e-6
 
 
+def test_from_real_ising_model_coupling():
+    """The reservoir can be built from a real DRIFT IsingModel's coupling J."""
+    from drift.ising import IsingModel
+
+    n = 120
+    rng = np.random.default_rng(5)
+    model = IsingModel(rng.standard_normal((n, n)), np.zeros(n))  # symmetrized internally
+    res = IsingReservoir.from_ising(model, spectral_radius=0.95, seed=0)
+    assert res.n == n
+    mc, _ = memory_capacity(res, max_delay=150, n_train=1400)
+    assert 0.1 * n < mc <= n * 1.05, f"MC {mc} out of range for N={n}"
+
+
 def _run_standalone() -> int:
     tests = [
         test_spectral_radius_is_set_via_spectra,
         test_memory_capacity_within_bound_and_substantial,
         test_memory_fades_with_delay,
         test_separation_zero_for_identical_positive_for_distinct,
+        test_from_real_ising_model_coupling,
     ]
     failures = 0
     for t in tests:

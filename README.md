@@ -77,10 +77,11 @@ and now the *dynamical* face:
   self-assembly · P6 — crystallization (self-replication) · P7 — the microscope.
 - **P8 — the dynamical (reservoir) face** (`drift/reservoir.py`): the Ising
   substrate driven in time as a physical reservoir, with *measurable* compute
-  capacity — Jaeger **memory capacity** and a **separation** metric (MC ≈ 33 / N=150,
-  peaking near spectral radius 0.95, the edge of chaos). Its spectral radius is set
-  via the **Spectra** spine, so DRIFT is a Spectra consumer. Ships with DRIFT's first
-  automated test suite (`tests/test_reservoir.py`, 4/4).
+  capacity — Jaeger **memory capacity** and a **separation** metric (MC = 43.5 / N=200,
+  peaking at spectral radius ρ ≈ 1.0, the edge of chaos — see
+  `figures/phase8_reservoir.png`). It can be built from a real `drift.ising.IsingModel`,
+  and its spectral radius is set via the **Spectra** spine, so DRIFT is a Spectra
+  consumer. Ships with DRIFT's first automated test suite (`tests/test_reservoir.py`, 5/5).
 
 The two synthesis figures sit in `figures/phase7_four_faces.png` (one engine, four faces)
 and `figures/phase7_roofline.png` (real systems vs. the Landauer floor). See

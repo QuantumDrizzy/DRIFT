@@ -50,12 +50,31 @@ class IsingReservoir:
     ) -> None:
         rng = np.random.default_rng(seed)
         w = rng.standard_normal((n, n)) * (rng.random((n, n)) < density)
+        self._setup(w, leak, input_scale, spectral_radius, rng)
+
+    @classmethod
+    def from_ising(
+        cls,
+        model,
+        spectral_radius: float = 0.95,
+        leak: float = 0.3,
+        input_scale: float = 0.5,
+        seed: int = 0,
+    ) -> "IsingReservoir":
+        """Build a reservoir whose coupling **is** a DRIFT ``IsingModel``'s J — the
+        same Ising substrate that solves ground-state problems, now run in time."""
+        self = cls.__new__(cls)
+        rng = np.random.default_rng(seed)
+        self._setup(np.array(model.J, dtype=float), leak, input_scale, spectral_radius, rng)
+        return self
+
+    def _setup(self, w, leak, input_scale, spectral_radius, rng) -> None:
         rho = _radius(w)
         self.W = w * (spectral_radius / rho) if rho > 0 else w
-        self.W_in = rng.uniform(-1.0, 1.0, n) * input_scale
+        self.n = w.shape[0]
+        self.W_in = rng.uniform(-1.0, 1.0, self.n) * input_scale
         self.leak = leak
-        self.n = n
-        self.state = np.zeros(n)
+        self.state = np.zeros(self.n)
 
     def run(self, u: np.ndarray, washout: int = 0) -> np.ndarray:
         """Drive with a scalar input series `u`; return states (len(u)−washout, n)."""
