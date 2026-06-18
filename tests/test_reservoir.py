@@ -16,7 +16,14 @@ import numpy as np
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from drift.reservoir import IsingReservoir, memory_capacity, separation  # noqa: E402
+from drift.reservoir import (  # noqa: E402
+    IsingReservoir,
+    computational_capability,
+    generalization_rank,
+    kernel_rank,
+    memory_capacity,
+    separation,
+)
 
 
 def test_spectral_radius_is_set_via_spectra():
@@ -62,6 +69,32 @@ def test_from_real_ising_model_coupling():
     assert 0.1 * n < mc <= n * 1.05, f"MC {mc} out of range for N={n}"
 
 
+def test_kernel_rank_exceeds_generalization_rank_and_obeys_bound():
+    """Independent inputs separate at least as well as noisy variants of one input."""
+    res = IsingReservoir(n=150, spectral_radius=1.0, seed=0)
+    m = 70
+    kr = kernel_rank(res, n_streams=m, length=100, washout=30)
+    gr = generalization_rank(res, n_streams=m, length=100, washout=30, noise=0.01)
+    assert 0 < kr <= m                      # bounded by the number of streams (and n)
+    assert 0 <= gr <= kr                    # noise sensitivity ≤ raw separation power
+
+
+def test_kernel_rank_grows_from_order_to_chaos():
+    """A more chaotic reservoir linearly separates more inputs (richer projection)."""
+    ordered = IsingReservoir(n=150, spectral_radius=0.2, seed=0)
+    chaotic = IsingReservoir(n=150, spectral_radius=1.5, seed=0)
+    kw = dict(n_streams=70, length=100, washout=30)
+    assert kernel_rank(ordered, **kw) < kernel_rank(chaotic, **kw)
+
+
+def test_computational_capability_high_at_edge_low_when_ordered():
+    """Kernel−generalization (computational power) is far larger near the edge than deep order."""
+    ordered = IsingReservoir(n=150, spectral_radius=0.2, seed=0)
+    edge = IsingReservoir(n=150, spectral_radius=1.1, seed=0)
+    kw = dict(n_streams=70, length=100, washout=30)
+    assert computational_capability(edge, **kw) > computational_capability(ordered, **kw)
+
+
 def _run_standalone() -> int:
     tests = [
         test_spectral_radius_is_set_via_spectra,
@@ -69,6 +102,9 @@ def _run_standalone() -> int:
         test_memory_fades_with_delay,
         test_separation_zero_for_identical_positive_for_distinct,
         test_from_real_ising_model_coupling,
+        test_kernel_rank_exceeds_generalization_rank_and_obeys_bound,
+        test_kernel_rank_grows_from_order_to_chaos,
+        test_computational_capability_high_at_edge_low_when_ordered,
     ]
     failures = 0
     for t in tests:

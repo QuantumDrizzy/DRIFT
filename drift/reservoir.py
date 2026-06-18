@@ -3,8 +3,10 @@
 The first seven faces are ground-state computation (static). This one uses the
 **dynamics** of an Ising-style coupled network as a physical reservoir: drive it
 with an input stream, read its state with a linear readout, and *measure how much
-it computes* — Jaeger **memory capacity** and a **separation** metric. That makes
-the computronium idea quantitative rather than rhetorical.
+it computes* — Jaeger **memory capacity**, a **separation** metric, and the
+Legenstein–Maass **kernel / generalization ranks** (linear-separation power vs noise
+sensitivity, whose difference estimates computational capability and peaks near the
+edge of chaos). That makes the computronium idea quantitative rather than rhetorical.
 
 The reservoir's spectral radius (its edge-of-chaos scaling) is set via the
 **Spectra** spine — this module is a Spectra consumer.
@@ -134,3 +136,74 @@ def separation(reservoir: IsingReservoir, eps: float, length: int = 500, washout
     x1 = reservoir.run(u1, washout=washout)
     x2 = reservoir.run(u2, washout=washout)
     return float(np.mean(np.linalg.norm(x1 - x2, axis=1)))
+
+
+def _final_states(reservoir: IsingReservoir, streams, washout: int) -> np.ndarray:
+    """Stack the final reservoir state reached by each driving stream (M × n)."""
+    return np.array([reservoir.run(u, washout=washout)[-1] for u in streams])
+
+
+def _effective_rank(x: np.ndarray, rel_tol: float) -> int:
+    """Numerical rank: singular values above `rel_tol`·σ_max. (Threshold-dependent.)"""
+    s = np.linalg.svd(x, compute_uv=False)
+    if s.size == 0 or s[0] == 0.0:
+        return 0
+    return int(np.sum(s > rel_tol * s[0]))
+
+
+def kernel_rank(
+    reservoir: IsingReservoir,
+    n_streams: int = 80,
+    length: int = 120,
+    washout: int = 40,
+    seed: int = 3,
+    rel_tol: float = 1e-3,
+) -> int:
+    """Legenstein–Maass linear-separation (kernel) rank.
+
+    Drive the reservoir with `n_streams` **independent** random input streams and take
+    each one's final state; the numerical rank of that (M × n) matrix is how many inputs
+    the reservoir maps to linearly separable states — its representational richness.
+    Rises with the spectral radius and is capped at min(n_streams, n).
+    """
+    rng = np.random.default_rng(seed)
+    streams = [rng.uniform(-1.0, 1.0, length) for _ in range(n_streams)]
+    return _effective_rank(_final_states(reservoir, streams, washout), rel_tol)
+
+
+def generalization_rank(
+    reservoir: IsingReservoir,
+    n_streams: int = 80,
+    length: int = 120,
+    washout: int = 40,
+    noise: float = 0.01,
+    seed: int = 4,
+    rel_tol: float = 1e-3,
+) -> int:
+    """Legenstein–Maass generalization rank.
+
+    Same protocol, but the streams are **noisy variants of one base stream** (differing
+    only by `noise`). The rank now measures how much the reservoir amplifies tiny input
+    differences — low is good (it generalizes); it stays low in the ordered regime and
+    grows as the dynamics become chaotic.
+    """
+    rng = np.random.default_rng(seed)
+    base = rng.uniform(-1.0, 1.0, length)
+    streams = [base + noise * rng.standard_normal(length) for _ in range(n_streams)]
+    return _effective_rank(_final_states(reservoir, streams, washout), rel_tol)
+
+
+def computational_capability(
+    reservoir: IsingReservoir,
+    n_streams: int = 80,
+    length: int = 120,
+    washout: int = 40,
+    rel_tol: float = 1e-3,
+) -> int:
+    """Legenstein–Maass estimate = kernel_rank − generalization_rank.
+
+    High linear-separation power with low noise sensitivity; the difference is largest
+    near the edge of chaos. (Only the parameters shared by both ranks are exposed.)
+    """
+    shared = dict(n_streams=n_streams, length=length, washout=washout, rel_tol=rel_tol)
+    return kernel_rank(reservoir, **shared) - generalization_rank(reservoir, **shared)
