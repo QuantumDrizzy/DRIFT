@@ -87,6 +87,25 @@ The two synthesis figures sit in `figures/phase7_four_faces.png` (one engine, fo
 and `figures/phase7_roofline.png` (real systems vs. the Landauer floor). See
 [`docs/ROADMAP.md`](docs/ROADMAP.md) and `docs/results/PHASE{1..7}-results.md`.
 
+## Results (the figures)
+
+**One engine, four faces** — optimization, self-assembly, self-replication and neural memory,
+all read as ground states of one Ising Hamiltonian:
+
+![One engine, four faces](figures/phase7_four_faces.png)
+
+**Real systems vs. the Landauer floor** — where actual hardware sits relative to the ultimate
+thermodynamic limits of computation:
+
+![Roofline vs. the Landauer floor](figures/phase7_roofline.png)
+
+**The dynamical (reservoir) face** — the Ising substrate as a physical reservoir; measurable
+compute capacity (memory capacity MC = 43.5 at N=200) peaking at the **edge of chaos** (ρ ≈ 1.0):
+
+![Reservoir capacity at the edge of chaos](figures/phase8_reservoir.png)
+
+Per-phase write-ups (P1–P8) live in [`docs/results/`](docs/results/).
+
 ## Stack
 
 Python-first (NumPy/SciPy + matplotlib for the engine and visuals — fast to iterate and
